@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Problemas</title> 
+</head>
+<body>
+  <p>Generar una lista de los números del 1 al 10 cada segundo</p>
+  <button id="setInterval">setInterval</button>
+  <button id="recursividad">Recursividad</button>
+  <button id="setTimeout-closure">setTimeout Closure</button>
+  <button id="setTimeout-let">setTimeout Let</button>
+  <div id="salida"></div>
+  <script>
+    const si = document.getElementById("setInterval");
+	const re = document.getElementById("recursividad");
+	const sc = document.getElementById("setTimeout-closure");
+	const sl = document.getElementById("setTimeout-let");
+	const salida = document.getElementById("salida");
+	
+	function limpiar() {
+	  salida.innerText = "";
+	}
+	
+	function agregar(num) {
+	  salida.innerHTML += num;
+	  salida.innerHTML += "<br>";
+	}
+	
+	si.addEventListener("click", function(evt) {
+	  limpiar();
+	  var cont = 1;
+	  var reloj = setInterval(
+	    function() {
+		  agregar(cont);		  
+		  if (++cont > 10) clearInterval(reloj);
+		}, 1000
+	  );
+	});
+	
+	re.addEventListener("click", function(evt) {
+	  limpiar();	  
+	  var cont = 1;
+	  function reloj() {	    
+		setTimeout(function() {
+		  agregar(cont);
+		  if (++cont <= 10) reloj();
+		}, 1000);		
+	  }
+	  reloj();
+	});
+	
+	sc.addEventListener("click", function(evt) {
+	  limpiar();
+	  for (var cont = 1; cont <= 10; cont++) {
+	    (function(x) {
+		  setTimeout(function() {
+		    agregar(x);
+		  }, 1000 * x);
+		})(cont);		
+	  }
+	});
+	
+	sl.addEventListener("click", function(evt) {
+	  limpiar();
+	  for (let cont = 1; cont <= 10; cont++) {
+	    setTimeout(function() {
+		  agregar(cont);
+		}, 1000 * cont);
+	  }
+	});
+  </script>
+</body>
+</html>

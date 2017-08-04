@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transformaciones CSS</title> 
+  <style>
+	#texto {
+	  left:100px;
+	  position:relative;
+	  top:100px;
+	  width:120px; 
+	  animation: vuelta 5s infinite;	
+	}
+
+	@keyframes vuelta {
+	  0% {
+	    transform: rotate(0);
+	  }
+	  
+	  /*50% {
+	    transform: rotate(180deg);
+	  }*/
+
+	  100% {
+	    transform: rotate(360deg);
+	  }
+	}
+  </style>  
+</head>
+<body>
+  <div id="texto">
+    Hola Mundo
+  </div>
+  <script>
+    /*const e = document.getElementById('texto');	
+	let grados = 0;
+	setInterval(function() {
+	  e.style.transform = 'rotate(' + grados++ + 'deg)';
+	  if (grados > 360) grados = 0;
+	}, 50);*/	
+  </script>
+</body>
+</html>

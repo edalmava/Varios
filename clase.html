@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clases JavaScript ES6</title>
+</head>
+<body>
+<div>
+  <p><button type="button" id="myButton">Obtener Texto</button></p>
+  <p><textarea id="myText">Hola Mundo...</textarea></p>
+</div>
+<script>
+  class Pagina {
+    constructor() {
+        this.boton = document.querySelector("#myButton");
+        this.boton.addEventListener("click", this.getTexto);
+		this._myPrivate = "";
+    }
+	
+	get myPrivate() {
+	  return this._myPrivate.toLowerCase();
+	}
+	
+	set myPrivate(cadena) {
+	  this._myPrivate = cadena;
+	  //return this._myPrivate.toLowerCase();
+	}
+    
+    getTexto() {
+        alert(document.querySelector("#myText").value);
+    }
+  }
+  
+  class PaginaExtend extends Pagina {
+    constructor() {
+	  super();
+	  this._myPrivate = "Edwin";
+	}	
+  }
+  
+  window.onload = function() {
+	const pagina = new PaginaExtend();
+	  
+	//pagina.getTexto();
+  }
+</script>
+</body>
+</html>

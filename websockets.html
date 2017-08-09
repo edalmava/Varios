@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat con WebSockets</title>
+</head>
+<body>
+<div id="area_mensajes"></div>
+<form>
+  <input type="text" id="mensaje" value="" required>
+  <button id="enviar">Enviar</button>
+</form>
+<script>
+// Polyfill prepend - útil en Microsoft Edge
+// Source: https://github.com/jserz/js_piece/blob/master/DOM/ParentNode/prepend()/prepend().md
+// https://developer.mozilla.org/en-US/docs/Web/API/ParentNode/prepend
+(function (arr) {
+  arr.forEach(function (item) {
+    if (item.hasOwnProperty('prepend')) {
+      return;
+    }
+    Object.defineProperty(item, 'prepend', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function prepend() {
+        var argArr = Array.prototype.slice.call(arguments),
+          docFrag = document.createDocumentFragment();
+        
+        argArr.forEach(function (argItem) {
+          var isNode = argItem instanceof Node;
+          docFrag.appendChild(isNode ? argItem : document.createTextNode(String(argItem)));
+        });
+        
+        this.insertBefore(docFrag, this.firstChild);
+      }
+    });
+  });
+})([Element.prototype, Document.prototype, DocumentFragment.prototype]);
+</script>
+<script>
+const conn = new WebSocket('ws://localhost:8090/chat');
+
+const form = document.querySelector("form");
+const mensaje = document.querySelector("#mensaje");
+const areamensajes = document.querySelector("#area_mensajes");
+
+form.addEventListener("submit", function(evt) {
+  evt.preventDefault();  
+  if (conn) {    
+    if (mensaje.checkValidity()) {
+	  conn.send(mensaje.value);
+	  addMsj(mensaje.value);	  	  
+	  //areamensajes.innerHTML += `<p>${mensaje.value}</p>`;
+	} //else {
+	  //mensaje.setCustomValidity("Mensaje Requerido");
+	//}
+  }  
+});
+
+function addMsj(msj) {
+  let p = document.createElement("p");
+  p.innerHTML = msj;
+  areamensajes.prepend(p);
+}
+
+conn.onopen = function(e) {
+  console.log("Connection established!");  	
+};
+
+conn.onmessage = function(e) {  
+  //areamensajes.innerHTML += `<p>${e.data}</p>`;  
+  addMsj(e.data);  
+};
+</script>
+</body>
+</html>

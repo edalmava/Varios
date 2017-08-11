@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Eventos enviados por el servidor - Interfaz EventSource</title>
+</head>
+<body>
+  <button id="stopEventSource">Stop</button>
+  <p>Recibiendo eventos del servidor:</p>
+  <ul id="eventList"></ul>
+<script>
+    window.onload = startup;
+	
+	function startup() {
+        var eventList = document.getElementById("eventList");
+        var evtSource = new EventSource("ssevent.php");
+		let stop = document.getElementById("stopEventSource");
+		
+		stop.addEventListener("click", function() {
+		  evtSource.close();
+		});
+        
+        // Start listening on the event source
+        
+        evtSource.onmessage = function(e) {
+            var newElement = document.createElement("li");
+            
+            newElement.innerHTML = "message: " + e.data;
+            eventList.appendChild(newElement);
+        }
+        
+        evtSource.addEventListener("ping", function(e) {
+            var newElement = document.createElement("li");
+            
+            var obj = JSON.parse(e.data);
+            newElement.innerHTML = "ping at " + obj.time;
+            eventList.appendChild(newElement);
+        }, false);
+		
+		evtSource.addEventListener("edalmava", function(e) {
+		   console.log(e.data);
+		});
+		
+		evtSource.onerror = function(e) {
+		  alert("EventSource failed.");
+		};
+    }
+</script>
+</body>
+</html>

@@ -3,12 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <title>Chat con WebSockets</title>
+  <style>
+    #userlistbox {
+	  border: 1px solid black; 
+	  margin: 5px;
+	  width: 100%; 
+	  height: 150px;
+	  overflow: scroll;
+	}
+	
+	#area_mensajes {
+	  border: 1px solid black; 
+	  margin: 5px;
+	  width: 100%; 
+	  height: 300px;
+	  overflow: scroll;
+	}
+  </style>
 </head>
 <body>
+<button id="open">Abrir Conexión</button>
+<button id="close">Cerrar Conexión</button>
+<p>Nickname: <input id="name" type="text" maxlength="12" placeholder="Su nickname" required>
+<input type="button" id="login" value="Conectar"></p>
+<div id="userlistbox"></div>
 <div id="area_mensajes"></div>
 <form>
-  <input type="text" id="mensaje" value="" required>
-  <button id="enviar">Enviar</button>
+  <input type="text" id="mensaje" value="" required disabled>
+  <button id="enviar" disabled>Enviar</button>
 </form>
 <script>
 // Polyfill prepend - útil en Microsoft Edge
@@ -39,23 +61,126 @@
 })([Element.prototype, Document.prototype, DocumentFragment.prototype]);
 </script>
 <script>
-const conn = new WebSocket('ws://localhost:8090/chat');
+var conn = null;
+var clienID = 0;
 
 const form = document.querySelector("form");
 const mensaje = document.querySelector("#mensaje");
 const areamensajes = document.querySelector("#area_mensajes");
+const cerrar = document.getElementById("close");
+const open = document.getElementById("open");
+const login = document.getElementById("login");
+const name = document.getElementById("name");
+
+function connect() {  
+  var serverUrl = "ws://" + window.location.hostname + ":8090/chat";
+  conn = new WebSocket(serverUrl);
+  
+  conn.onopen = function(e) {
+    console.log("Connection established!");
+    document.getElementById("mensaje").disabled = false;
+    document.getElementById("enviar").disabled = false;  
+    document.getElementById("login").disabled = true;	
+  };
+
+  conn.onclose = function(e) {
+    console.log("Conexión cerrada");
+	document.getElementById("mensaje").disabled = true;
+    document.getElementById("enviar").disabled = true; 
+    document.getElementById("login").disabled = false;	
+  };
+
+  conn.onerror = function(e) {
+    console.error("Ha ocurrido un error con la conexión");
+  }
+
+  conn.onmessage = function(e) {  
+    //areamensajes.innerHTML += `<p>${e.data}</p>`;
+	let text = "";
+    let msg = JSON.parse(e.data);
+	let time = new Date(msg.date);
+    let timeStr = time.toLocaleTimeString();
+	
+	switch(msg.type) {
+	  case "message":
+	    text = "(" + timeStr + ") <b>" + msg.name + "</b>: " + msg.text + "<br>";
+	    break;
+	  case "id":
+        clientID = msg.id;		
+        setUsername();
+        break;
+	  case "username":
+        text = "<b>Usuario <em>" + msg.name + "</em> se conecto a las " + timeStr + "</b><br>";
+        break;
+	  case "desconexion":
+	    text = "<b>Usuario <em>" + msg.name + "</em> se desconecto a las " + timeStr + "</b><br>";
+	    break;
+	  case "userlist":
+	    var ul = "";
+        var i;
+
+        for (i=0; i < msg.users.length; i++) {
+          ul += msg.users[i] + "<br>";
+        }
+        document.getElementById("userlistbox").innerHTML = ul;
+		break;
+	}
+    
+	if (text.length) {
+	  addMsj(text);
+	}
+	//addMsj(e.data);  
+  };
+}
+
+function setUsername() {
+  var msg = {
+    name: document.getElementById("name").value,
+    date: Date.now(),
+    id: clientID,
+    type: "username"
+  };
+  conn.send(JSON.stringify(msg));
+}
+
+login.addEventListener("click", function(evt) {
+  if (name.checkValidity()) {
+    connect();
+  } else {
+    console.log('NickName Requerido');
+  }
+});
+
+open.addEventListener("click", function() {
+  if (conn.readyState == 3) { conn =  new WebSocket('ws://localhost:8090/chat'); }
+  else { console.log("El WebSocket esta abierto: OPEN"); } 
+});
+
+cerrar.addEventListener("click", function() {
+  conn.close();
+});
 
 form.addEventListener("submit", function(evt) {
   evt.preventDefault();  
-  if (conn) {    
+  if (conn.readyState == 1) {    
     if (mensaje.checkValidity()) {
-	  conn.send(mensaje.value);
-	  addMsj(mensaje.value);	  	  
+	  var msg = {
+        text: mensaje.value,
+        type: "message",
+        id: clientID,
+        date: Date.now()
+      };
+	  conn.send(JSON.stringify(msg));
+	  //addMsj(mensaje.value);
+      mensaje.value = "";	  
 	  //areamensajes.innerHTML += `<p>${mensaje.value}</p>`;
-	} //else {
-	  //mensaje.setCustomValidity("Mensaje Requerido");
-	//}
-  }  
+	} /*else {
+	  mensaje.setCustomValidity("Mensaje Requerido");
+	}*/
+  } else {
+	//mensaje.setCustomValidity("No hay Conexión");
+	console.log("La conexión se ha cerrado");
+  }
 });
 
 function addMsj(msj) {
@@ -63,15 +188,6 @@ function addMsj(msj) {
   p.innerHTML = msj;
   areamensajes.prepend(p);
 }
-
-conn.onopen = function(e) {
-  console.log("Connection established!");  	
-};
-
-conn.onmessage = function(e) {  
-  //areamensajes.innerHTML += `<p>${e.data}</p>`;  
-  addMsj(e.data);  
-};
 </script>
 </body>
 </html>

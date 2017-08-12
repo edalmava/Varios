@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<script>
+  function crearNodoTexto(elemento, texto, pariente) {
+    var element = document.createElement(elemento);
+	var nodeText = document.createTextNode(texto);
+	element.appendChild(nodeText);
+	pariente.appendChild(element);
+	return element;
+  }
+  
+  function crearNodoElemento(elemento, hijo) {
+    var element = document.createElement(elemento);
+	element.appendChild(hijo);
+	return element;
+  }
+    
+  function agregar() {
+    var table = document.querySelector("table tbody");
+	
+	if (table.rows.length == 0) {
+	  table.insertRow(0);
+	  for (var i = 0; i < 6; i++) {
+	    table.rows[0].insertCell(i);
+	  }
+      table.rows[0].cells[0].setAttribute("id", "menu");
+	  table.rows[0].cells[0].innerHTML = "MENÚ";
+	  table.rows[0].cells[1].setAttribute("id", "personas");
+      table.rows[0].cells[1].innerHTML = "N° PERSONAS";
+	  table.rows[0].cells[2].innerHTML = "VALOR";
+	  table.rows[0].cells[3].innerHTML = "TOTAL";
+	  table.rows[0].cells[4].innerHTML = "CANTIDAD";
+	  table.rows[0].cells[5].innerHTML = '<button type="button" onclick="eliminar(this.parentElement)">X</button>';
+	} else {
+	  var menu = document.getElementById("menu");
+	  var persona = document.getElementById("personas");
+    	
+	  var tr = document.createElement("tr");
+	
+	  crearNodoTexto("td", "VALOR", tr);
+	  crearNodoTexto("td", "TOTAL", tr);
+	  crearNodoTexto("td", "CANTIDAD", tr);
+	  var button = crearNodoTexto("button", "X", tr);
+	  button.type = "button";	
+	  button.addEventListener("click", function(e) {
+	    eliminar(e.target.parentElement);
+	  });	
+	  tr.appendChild(crearNodoElemento("td", button));
+	
+	  table.appendChild(tr);	  
+      menu.rowSpan++;
+	  persona.rowSpan++;
+	}
+  }
+  
+  function eliminar(td) {
+    var tr = td.parentElement;
+	var table = tr.parentElement;
+	var menu = document.getElementById("menu");
+	var persona = document.getElementById("personas");	
+	
+	if (tr.cells.length == 4) {
+	  tr.remove();
+	  menu.rowSpan--;
+	  persona.rowSpan--;
+	} else { 
+      if (table.rows.length == 1) {
+		tr.remove();
+      } else {			
+        var conMenu = menu.innerHTML;
+        var conPersona = persona.innerHTML;
+        tr.remove();
+        var canRows = table.rows.length;
+        table.rows[0].insertCell(0);
+		table.rows[0].cells[0].innerHTML = conMenu;
+		table.rows[0].cells[0].setAttribute("id", "menu");
+		table.rows[0].cells[0].setAttribute("rowspan", canRows);
+		table.rows[0].insertCell(1);
+		table.rows[0].cells[1].innerHTML = conPersona;
+		table.rows[0].cells[1].setAttribute("id", "personas");
+		table.rows[0].cells[1].setAttribute("rowspan", canRows);
+	  }
+	}
+  }
+</script>
+<style>
+  table,
+  th,
+  td {
+    border: 1px solid #000;
+	border-collapse: collapse;
+  }
+</style>
+<p><button type="button" onclick="agregar()">Agregar</button>
+<table>
+  <tr>
+    <td rowspan="4" id="menu">MENÚ
+	<td rowspan="4" id="personas">N° PERSONAS
+	<td>VALOR
+	<td>TOTAL
+	<td>CANTIDAD
+	<th><button type="button" onclick="eliminar(this.parentElement)">X</button>
+  <tr>
+	<td>VALOR
+	<td>TOTAL
+	<td>CANTIDAD
+	<td><button type="button" onclick="eliminar(this.parentElement)">X</button>
+  <tr>
+	<td>VALOR
+	<td>TOTAL
+	<td>CANTIDAD
+	<td><button type="button" onclick="eliminar(this.parentElement)">X</button>
+  <tr>
+	<td>VALOR
+	<td>TOTAL
+	<td>CANTIDAD
+	<td><button type="button" onclick="eliminar(this.parentElement)">X</button>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Components V1</title>
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  </head>
+<body>
+<hola-componentes></hola-componentes>
+<script>  
+  /*(function() {
+    if ('registerElement' in document
+	  && 'import' in document.createElement('link')
+	  && 'content' in document.createElement('template')) {
+	  console.log('platform is good!');
+    } else {
+	  console.log('polyfill the platform!');
+	  var e = document.createElement('script');
+	  e.src = 'bower_components/webcomponentsjs/webcomponents-lite.js';
+	  document.body.appendChild(e);
+    }
+  })(); */
+  
+  class HolaComponentes extends HTMLElement {
+    constructor() {
+	  super();
+	  this.attachShadow({mode: 'open'}).innerHTML = '<p>Hola! soy un Custom Element!</p>';
+	}
+  }
+  
+  customElements.define('hola-componentes', HolaComponentes);  
+</script>
+</body>
+</html>

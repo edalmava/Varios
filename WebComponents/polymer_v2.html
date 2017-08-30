@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Polymer v2</title> 
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">  -->  
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="https://polygit.org/components/polymer/polymer-element.html">
+  <link rel="import" href="edalmava-saludo.html">
+  <link rel="import" href="navegador-secciones.html">
+  <link rel="import" href="name-tag.html">
+  <link rel="import" href="configurable-name-tag.html">
+  <link rel="import" href="editable-name-tag.html">
+  <link rel="import" href="employee-list.html">
+</head>
+<body>
+<navegador-secciones></navegador-secciones>
+<edalmava-saludo></edalmava-saludo>
+<name-tag></name-tag>
+<configurable-name-tag owner="Edwin"></configurable-name-tag>
+<editable-name-tag></editable-name-tag>
+<employee-list></employee-list>
+<template id="mi-template">
+  <p>Hola! soy un Polymer Element simple!</p>
+</template>
+<script>
+  class HolaComponentes extends Polymer.Element {
+    static get template() { return document.getElementById('mi-template'); }
+	static get is() { return 'hola-componentes'; }
+  }
+  
+  customElements.define(HolaComponentes.is, HolaComponentes);
+</script>
+<hola-componentes></hola-componentes>
+</body>
+</html>

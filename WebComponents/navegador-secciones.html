@@ -1,0 +1,51 @@
+<link rel="import"  href="https://polygit.org/components/polymer/polymer-element.html">
+
+<dom-module id="navegador-secciones">
+
+  <template>
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">  -->
+	<style>
+    nav {
+      background-color: #eef;
+      padding: 10px;
+    }
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+    }
+    li {
+      display: inline-block;
+      margin-left: 15px;
+    }
+    </style>
+    <nav class="navbar">
+      <ul>
+          <li>
+            <a class="btn btn-primary" href="pagina1.html">
+              Enlace 1
+            </a>
+          </li>
+          <li>
+            <a href="pagina2.html">
+              Enlace 2
+            </a>
+          </li>
+          <li>
+            <a href="pagina3.html">
+              Enlace 3
+            </a>
+          </li>
+        </ul>
+    </nav> 
+  </template>
+  
+  <script>
+    class NavegadorSecciones extends Polymer.Element {
+      static get is() { return 'navegador-secciones'; }
+    }
+
+    customElements.define(NavegadorSecciones.is, NavegadorSecciones);
+  </script>
+
+</dom-module>

@@ -1,0 +1,24 @@
+<link rel="import"  href="https://polygit.org/components/polymer/polymer-element.html">
+
+<dom-module id="edalmava-saludo">  
+<template>
+  <style>
+    h2 {
+      background-color: orange;
+      color: white;
+    }
+  </style>
+  <h2>Esto es un test</h2>
+</template>
+<script>
+class EdalmavaSaludo extends Polymer.Element {
+    static get is() {
+      return 'edalmava-saludo';
+    }
+    constructor() {
+      super();
+    }
+}
+customElements.define(EdalmavaSaludo.is, EdalmavaSaludo);
+</script>
+</dom-module>
